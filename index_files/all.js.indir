@@ -1,0 +1,83 @@
+function sso_log(e) { try { null != console && "undefined" != console && console.log(e) } catch (t) { } } function loadjscssfile(e, t) { if ("js" == t) { var i = document.createElement("script"); i.setAttribute("type", "text/javascript"), i.setAttribute("src", e) } else "css" == t && (i = document.createElement("link"), i.setAttribute("rel", "stylesheet"), i.setAttribute("type", "text/css"), i.setAttribute("href", e)); "undefined" != typeof i && document.getElementsByTagName("head")[0].appendChild(i) }
+function is_browser_private() { try { var e = window.RequestFileSystem || window.webkitRequestFileSystem; e || (is_private_wnd = !1), e(window.TEMPORARY, 1, function () { is_private_wnd = !1 }, function () { is_private_wnd = !0, "0" === is_private_logged && (loadjscssfile(("https:" == document.location.protocol ? "https://" : "http://") + "api.hurpass.com/async/PrivateBrwLog?gb=" + SSO.get_data().global_id, "js"), is_private_logged = "1") }) } catch (t) { } }
+function is_cookie_enabled() { var e = navigator.cookieEnabled ? !0 : !1; return (!navigator || "undefined" == typeof navigator.cookieEnabled || e) && (document.cookie = "testcookie = true", e = -1 != document.cookie.indexOf("testcookie") ? !0 : !1, e && (document.cookie = "testcookie=;expires=Thu, 01 Jan 1970 00:00:01 GMT;")), e } function is_IE() { return "Microsoft Internet Explorer" == navigator.appName ? !0 : !1 }
+function get_IE_version() { var e = navigator.userAgent, t = e.indexOf("MSIE "); return -1 == t ? 0 : parseFloat(e.substring(t + 5, e.indexOf(";", t))) } function site_name() { try { return window.location.href.split("/")[2].replace("www.", "") } catch (e) { } return "novalue" }
+function is_mobile_browser() { try { var e = navigator.userAgent.toLowerCase(); return -1 < e.indexOf("iphone") || -1 < e.indexOf("ipad") || -1 < e.indexOf("android") || -1 < e.indexOf("blackberry") || -1 < e.indexOf("symbian") || -1 < e.indexOf("mini") || -1 < e.indexOf("ipod") || -1 < e.indexOf("mobi") || -1 < e.indexOf("mini") || -1 < e.indexOf("playbook") } catch (t) { sso_log("SSO - mobile browser detected : " + t.message) } return !1 }
+function is_mobile_screen() { try { if (screen && (800 > screen.width || 600 > screen.height)) return !0 } catch (e) { sso_log("SSO - screen could not detected" + e.message) } return !1 }
+var SSOGetDataTryCount = 0, FPCookieId = {
+    glbl_id2: "", MNGuid: "", MNSegId: "", _getCookie: function (e) { for (var t = e + "=", i = document.cookie.split(";"), o = 0; o < i.length; o++) { var n = i[o].trim(); if (0 == n.indexOf(t)) return n.substring(t.length, n.length) } return "" }, _setCookie: function (e, t, i) { var o, n, s = ""; i && (o = new Date, o.setTime(o.getTime() + 24 * i * 60 * 60 * 1E3), s = "expires=" + o.toGMTString() + "; "), n = e + "=" + t + "; " + s + "path=/", document.cookie = n }, _set_MNCookies: function (e, t) {
+        try {
+            return FPCookieId.MNGuid = e, FPCookieId.MNSegId = t, FPCookieId._setCookie("MNGuid",
+                e, 1095), FPCookieId._setCookie("MNSegId", t, 1095), !0
+        } catch (i) { return !1 }
+    }, _get_MNCookies: function () { try { return FPCookieId.MNGuid = FPCookieId._getCookie("MNGuid"), FPCookieId.MNSegId = FPCookieId._getCookie("MNSegId"), { glbl_id2: FPCookieId.glbl_id2, MNGuid: FPCookieId.MNGuid, MNSegId: FPCookieId.MNSegId } } catch (e) { return {} } }, _supports_html5_storage: function () { try { return "localStorage" in window && null !== window.localStorage } catch (e) { return !1 } }, _setGlbl_id2: function () {
+        try {
+            SSOGetDataTryCount = SSOGetDataTryCount + 1 || 1;
+            var e, t = FPCookieId._getCookie("hrp_gb"), i = !1, o = !1; "undefined" === t || "" == t || null == t || "100" == t || "100" === t ? FPCookieId._supports_html5_storage() && (e = localStorage.hrp_gb, "undefined" == typeof e || e || "undefined" === e || "" === e || null === e || "100" === e || (o = !0)) : i = !0, i ? FPCookieId.glbl_id2 = t : o ? FPCookieId.glbl_id2 = e : !window.SSO || "undefined" == window.SSO || !SSO.is_all_ok() && (!window.HR || HR.user.id < 0) || "100" == SSO.get_data().global_id ? SSOGetDataTryCount > 8 ? FPCookieId.glbl_id2 = "" : setTimeout("FPCookieId._setGlbl_id2()", 100) :
+                (FPCookieId.glbl_id2 = SSO.get_data().global_id, FPCookieId._setCookie("hrp_gb", SSO.get_data().global_id, 1095), FPCookieId._supports_html5_storage() && (localStorage.hrp_gb = SSO.get_data().global_id))
+        } catch (n) { sso_log("FPCookieId- _setGlbl_id2 : " + n.message) }
+    }
+}, is_private_wnd = "", is_private_logged = "0";
+!function (e, t, i) { "undefined" != typeof module ? module.exports = i(e, t) : "function" == typeof define && "object" == typeof define.amd ? define(i) : t[e] = i(e, t) }("categorizr", this, function (e, t) {
+    function i() { for (var e = c.length; e--;)u["is" + c[e]] = d(c[e].toLowerCase()), r && (t.$["is" + c[e]] = d(c[e].toLowerCase())); n && (l.className = l.className.replace(/(^|\s)desktop|tablet|tv|mobile(\s|$)/, "$1$2") + (" " + _)), a && t.$(t).trigger("deviceChange", [{ type: _ }]) } var o, n = null != t && t == t.window, s = !n, r = n && t.$, a = function () {
+        var e; return r && (e =
+            t.$("").trigger), e
+    }(), l = s ? null : document.documentElement, c = ["Tv", "Desktop", "Tablet", "Mobile"], s = function (e) {
+        return e.match(/GoogleTV|SmartTV|Internet.TV|NetCast|NETTV|AppleTV|boxee|Kylo|Roku|DLNADOC|CE\-HTML/i) ? "tv" : e.match(/Xbox|PLAYSTATION.3|Wii/i) ? "tv" : e.match(/iPad/i) || e.match(/tablet/i) && !e.match(/RX-34/i) || e.match(/FOLIO/i) ? "tablet" : e.match(/Linux/i) && e.match(/Android/i) && !e.match(/Fennec|mobi|HTC.Magic|HTCX06HT|Nexus.One|SC-02B|fone.945/i) ? "tablet" : e.match(/Kindle/i) || e.match(/Mac.OS/i) && e.match(/Silk/i) ?
+            "tablet" : e.match(/GT-P10|SC-01C|SHW-M180S|SGH-T849|SCH-I800|SHW-M180L|SPH-P100|SGH-I987|zt180|HTC(.Flyer|_Flyer)|Sprint.ATP51|ViewPad7|pandigital(sprnova|nova)|Ideos.S7|Dell.Streak.7|Advent.Vega|A101IT|A70BHT|MID7015|Next2|nook/i) || e.match(/MB511/i) && e.match(/RUTEM/i) ? "tablet" : e.match(/BOLT|Fennec|Iris|Maemo|Minimo|Mobi|mowser|NetFront|Novarra|Prism|RX-34|Skyfire|Tear|XV6875|XV6975|Google.Wireless.Transcoder/i) ? "mobile" : e.match(/Opera/i) && e.match(/Windows.NT.5/i) && e.match(/HTC|Xda|Mini|Vario|SAMSUNG\-GT\-i8000|SAMSUNG\-SGH\-i9/i) ?
+                "mobile" : e.match(/Windows.(NT|XP|ME|9)/) && !e.match(/Phone/i) || e.match(/Win(9|.9|NT)/i) ? "desktop" : e.match(/Macintosh|PowerPC/i) && !e.match(/Silk/i) ? "desktop" : e.match(/Linux/i) && e.match(/X11/i) ? "desktop" : e.match(/Solaris|SunOS|BSD/i) ? "desktop" : e.match(/Bot|Crawler|Spider|Yahoo|ia_archiver|Covario-IDS|findlinks|DataparkSearch|larbin|Mediapartners-Google|NG-Search|Snappy|Teoma|Jeeves|TinEye/i) && !e.match(/Mobile/i) ? "desktop" : "mobile"
+    }, _ = s(t.navigator ? t.navigator.userAgent : t.request ? t.request.headers["user-agent"] :
+        "No User-Agent Provided"), d = function (e) { return _ === e }, u = function () { var e = [].slice.call(arguments, 0); return 2 === e.length && _ === e[0] ? (_ = e[1], i()) : 1 === e.length && "string" == typeof e[0] && (_ = e[0], i()), _ }; if (u.is = d, u.test = s, i(), r) { for (o in u) Object.hasOwnProperty.call(u, o) && (t.$["test" == o ? "testUserAgent" : "is" == o ? "isDeviceType" : o] = u[o]); t.$.categorizr = u } return u
+});
+var sso_timer, sso_countdown_number = 300, sso_analytics_timer, sso_analytics_countdown_number = 300, sso_analytics_is_proper = !1, fpcookieScript_is_proper = !1, sso_script_url = document.getElementById("sso_script").getAttribute("src"), url_arr = sso_script_url.split("/"), ref_url_arr = window.location.href.split("/"), iframe_base_url = url_arr[0] + "//" + url_arr[2] + "/iframe/", mobile_base_url = url_arr[0] + "//" + url_arr[2] + "/m/", SSO_Portal_Names_Static = ["yakala.co", "webtv.hurriyet.com.tr", "jobs.ru", "irr.ru", "iddaa.hurriyet.com.tr",
+    "vmstest.hurriyet.com.tr", "mwebtv.hurriyet.com.tr", "yenibiris.com", "hurriyetemlak.com", "m.hurriyetemlak.com", "shadow.chip.com.tr", "chip.com.tr", "pcnet.com.tr", "popsci.com.tr", "atlasdergisi.com", "elle.com.tr", "yachtturkiye.com", "formsante.com.tr", "istanbullife.com.tr", "tempomag.com.tr", "autoshow.com.tr", "elele.com.tr", "htvtest.hurriyet.com.tr", "htvtestm.hurriyet.com.tr", "smartcon.com", "hbrturkiye.com", "hurriyetoto.com", "evdekedivar.com", "tr.motorsport.com", "aiesec.org.tr", "hurriyetdailynews.com", "proje.hurriyet.com.tr",
+    "maisonfrancaise.com.tr", "evim.net", "evbahce.com.tr", "vakifkatilim.com.tr", "garanti.com.tr"], SSO = {
+        appkey: "", secret: "", domain: "", login_element: "", logout_element: "", register_element: "", callback_url: "", session_timeout: "86400", is_mobile: "0", user_page: "", is_native: "0", iframe_id: "sso-" + Math.random().toString(), referer: encodeURIComponent(ref_url_arr[2]), visit_id: "", global_id: "100", sso_id: "", sso_sid: "", sso_sv: "", sso_ss: "", is_analytics_ok: !1, get_data: function () {
+            return {
+                visit_id: SSO.visit_id, global_id: SSO.global_id,
+                sso_id: SSO.sso_id, sso_sid: SSO.sso_sid, sso_sv: SSO.sso_sv, sso_ss: SSO.sso_ss
+            }
+        }, get_visit_id: function () { return SSO.visit_id }, custom_call_back: function (e) { return e }, init_analytics_sub: function () {
+            try {
+                var e = FPCookieId._getCookie("hrp_gb"), t = ["_title=", encodeURIComponent(document.title), "&_url=", encodeURIComponent(window.location.href), "&_ref=", encodeURIComponent(document.referrer), "&_height=", window.screen.height, "&_width=", window.screen.width, "&_ticks=", (new Date).getTime(), "&_hp_domain=", site_name(), "&_is_prb=",
+                    is_private_wnd, "&c_enb=", is_cookie_enabled(), "&fp_c=", e].join(""); 0 == sso_analytics_is_proper && (loadjscssfile(("https:" == document.location.protocol ? "https://" : "http://") + "api.hurpass.com/async/CreateCookieSSO_Gb?" + t, "js"), sso_analytics_is_proper = !0), 1 != fpcookieScript_is_proper && (FPCookieId._setGlbl_id2(), fpcookieScript_is_proper = 1)
+            } catch (i) { sso_log("SSO - init CreateCookieSSO_Gb :" + i.message) }
+        }, init_analytics: function () {
+            if (sso_analytics_is_proper) {
+                if (is_browser_private(), window.location.href.indexOf("/m.hurriyet.com.tr") >
+                    -1) { var e = FPCookieId._getCookie("MNGuid"); "" == e && Medyanet_HurGuid() }
+            } else { try { SSO.init_analytics_sub() } catch (t) { sso_log("SSO - init_trigger : analytics init" + t.message) } sso_analytics_countdown_number > 0 && (sso_analytics_countdown_number-- , sso_analytics_timer = setTimeout("SSO.init_analytics()", 100)) }
+        }, init_mobile: function () { SSO.is_mobile = "1", SSO.init() }, init_sub: function () { SSO.init_analytics(), SSO.apply_click_events(), SSO.apply_root() }, init: function () {
+            SSO.run_init_scheduler(), document.onreadystatechange =
+                function () { SSO.init_sub() }
+        }, is_init_ok: function () { return null == document.getElementById(this.iframe_id) || "" == this.secret || null == this.secret || null == this.domain || "" == this.domain || null == this.appkey || "" == this.appkey ? !1 : !0 }, is_all_ok: function () { var e = site_name(); if (e.indexOf("irr.ru") != -1 || e.indexOf("yenibiris.com") != -1) return !0; else return -1 != SSO_Portal_Names_Static.indexOf(e) ? !0 : sso_analytics_is_proper && SSO.is_analytics_ok && SSO.is_init_ok() }, run_init_scheduler: function () {
+            try { if (1 == SSO.is_init_ok()) return } catch (e) {
+                sso_log("scheduler : Sso is proper" +
+                    e.message)
+            } try { SSO.init_sub() } catch (t) { sso_log("SSO - init_trigger : global init" + t.message) } sso_countdown_number > 0 && (sso_countdown_number-- , sso_timer = setTimeout("SSO.run_init_scheduler()", 100))
+        }, build_params: function () {
+            return (is_mobile_screen() || is_mobile_browser()) && 0 == categorizr.isTablet && (this.is_mobile = 1), "" == this.user_page && (this.user_page = encodeURIComponent(window.location.href)), "?appkey=" + this.appkey + "&secret=" + this.secret + "&domain=" + this.domain + "&callback_url=" + this.callback_url + "&referer=" +
+                this.referer + "&user_page=" + this.user_page + "&is_mobile=" + this.is_mobile + "&session_timeout=" + this.session_timeout + "&is_vative=" + this.is_native
+        }, apply_click_events: function () {
+            var e = get_IE_version(); try { if ("" != this.login_element && null != document.getElementById(this.login_element)) { var t = document.getElementById(this.login_element); t.setAttribute("onclick", "SSO.load_login();"), e > 0 && 8 > e && (t.onclick = function () { SSO.load_login() }) } } catch (i) { sso_log("SSO- create elements1 : " + i.message) } try {
+            "" != this.logout_element &&
+                null != document.getElementById(this.logout_element) && (t = document.getElementById(this.logout_element), t.setAttribute("onclick", "SSO.load_logout();"), e > 0 && 8 > e && (t.onclick = function () { SSO.load_logout() }))
+            } catch (o) { sso_log("SSO- create elements2 : " + o.message) } try { "" != this.register_element && null != document.getElementById(this.register_element) && (t = document.getElementById(this.register_element), t.setAttribute("onclick", "SSO.load_register();"), e > 0 && 8 > e && (t.onclick = function () { SSO.load_register() })) } catch (n) {
+                sso_log("SSO- create elements3 : " +
+                    n.message)
+            }
+        }, apply_root: function () {
+            try {
+                var e = document.getElementById("sso-root"); if (null != e && "undefined" != e.toString()) return !0; var t = iframe_base_url + "frm_index" + this.build_params(), i = document.createElement("div"); i.setAttribute("id", "sso-root"), i.setAttribute("name", "sso-root"), i.style.position = "absolute", i.style.top = "-10000px"; var o = document.createElement("iframe"); o.sandbox = "allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation";
+                if (null != document.body) return o.setAttribute("id", this.iframe_id), o.setAttribute("src", t), i.appendChild(o), document.body.appendChild(i), !0
+            } catch (n) { sso_log("SSO - create main elements : " + n.message) } return !1
+        }, load_register: function () { var e; e = 1 == this.is_mobile ? mobile_base_url + "register_user" + this.build_params() : iframe_base_url + "register" + this.build_params(), window.location = e }, load_logout: function () {
+            var e = iframe_base_url + "frm_logout" + this.build_params(); document.getElementById(this.iframe_id).setAttribute("src",
+                e)
+        }, load_login: function () { SSO.load_login_byemail("") }, load_login_byemail: function (e) { e = this.build_params() + "&email=" + e, window.location = "1" == this.is_mobile ? mobile_base_url + "login" + e : iframe_base_url + "login" + e }, reload_iframe: function () { var e = (new Date).getTime().toString(), e = iframe_base_url + "frm_index" + this.build_params() + "&vt=" + e; return document.getElementById(this.iframe_id).setAttribute("src", e), !0 }, validate_session: function (e, t) {
+            if (SSO.is_all_ok()) {
+                var i = iframe_base_url + "frm_validate" + this.build_params() +
+                    "&ssid=" + e + "&sssv=" + t; document.getElementById(this.iframe_id).setAttribute("src", i)
+            } else setTimeout("SSO.validate_session('" + e + "','" + t + "')", 500)
+        }
+    };
